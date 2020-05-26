@@ -22,7 +22,7 @@ pip3 show streamlit
 
 The problem is that this requires the user redoing the process after every streamlit update.
 
-**2nd Way** (Not implemented yet)
+**2nd Way** (Implemented, but please try it before using in production)
 
 If you have streamlit installed currently, uninstall it:
 
