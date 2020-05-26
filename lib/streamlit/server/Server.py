@@ -53,19 +53,20 @@ from streamlit.server.server_util import is_url_from_allowed_origins
 from streamlit.server.server_util import make_url_path_regex
 from streamlit.server.server_util import serialize_forward_msg
 
+
+import os  # IMPULSO HACK
+
 if TYPE_CHECKING:
     from streamlit.Report import Report
 
 LOGGER = get_logger(__name__)
 
-#IMPULSO HACK
-import os
+
 TORNADO_SETTINGS = {
     "compress_response": True,  # Gzip HTTP responses.
     "websocket_ping_interval": 20,  # Ping every 20s to keep WS alive.
     "websocket_ping_timeout": 30,  # Pings should be responded to within 30s.
     "websocket_max_message_size": MESSAGE_SIZE_LIMIT,  # Up the WS size limit.
-    "static_path": os.path.join(os.getcwd(), "static"),
 }
 
 
@@ -310,8 +311,16 @@ class Server(object):
                 dict(file_mgr=self._uploaded_file_mgr),
             ),
             (make_url_path_regex(base, "media/(.*)"), MediaFileHandler),
+            (
+                make_url_path_regex(base, "resources/(.*)"),
+                tornado.web.StaticFileHandler,
+                {
+                    "path": os.path.join(os.getcwd(), "resources"),
+                    "default_filename": "index.html",
+                },
+            ),
         ]
-
+        # IMPULSO HACK
         if config.get_option("global.developmentMode") and config.get_option(
             "global.useNode"
         ):
